@@ -35,7 +35,7 @@ Python, pandas, matplotlib, seaborn, Jupyter Notebook
 ## How to Run
 ```bash
 pip install pandas matplotlib seaborn jupyter
-jupyter notebook EDA_Retail_Sales.ipynb
+jupyter notebook EDA Retail Sales.ipynb
 ```
 
 ## Note on Data
