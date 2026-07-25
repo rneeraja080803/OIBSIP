@@ -1,42 +1,43 @@
-# EDA on Retail Sales Data
+# Customer Segmentation Analysis
 
-**Track:** Data Analytics — Level 1, Task 1
+**Track:** Data Analytics — Level 1, Task 2
 **Internship:** Oasis Infobyte SIP
+**Repository:** [github.com/rneeraja080803/OIBSIP](https://github.com/rneeraja080803/OIBSIP)
 
 ## Objective
-Perform a thorough Exploratory Data Analysis on a retail sales dataset to uncover patterns, customer behaviour trends, and actionable business insights.
+Apply clustering algorithms to segment an e-commerce company's customer base into distinct groups based on purchasing behaviour, enabling targeted marketing strategies.
 
 ## Dataset
-**Sample Superstore Dataset** (Kaggle) — 9,994 orders across 2014–2017, covering order/ship dates, customer segment, region, product category/sub-category, sales, quantity, discount, and profit.
-
-> **⚠️ Note on the "Customer Demographics" checklist item:** This dataset does not contain individual customer age or gender fields (it is transaction/order-level data, not user-profile data). Rather than fabricate synthetic demographic fields onto real transaction records, I substituted the closest genuine demographic-style breakdowns available in the dataset — **Customer Segment** (Consumer / Corporate / Home Office) and **Region** — and documented this substitution explicitly in the notebook (Section 4). This follows the task's self-sourcing guideline, which permits any suitable retail/e-commerce sales dataset; the Superstore dataset is the most widely used dataset of this type precisely because it's transaction-level rather than customer-profile-level.
+**Online Retail Dataset** (UCI Machine Learning Repository, via Kaggle) — 541,909 transaction line items from a UK-based online retailer, December 2010–December 2011.
 
 ## Tech Stack
-Python, pandas, matplotlib, seaborn, Jupyter Notebook
+Python, pandas, scikit-learn (KMeans, StandardScaler), matplotlib, seaborn, Jupyter Notebook
 
-## What's Inside
-`EDA_Retail_Sales.ipynb` covers:
-1. Initial inspection (shape, dtypes, nulls, duplicates)
-2. Descriptive statistics (mean, median, mode, std)
-3. Time series analysis — monthly and quarterly sales trends
-4. Customer segment / regional breakdown (substituting for age/gender, which this dataset does not contain)
-5. Product analysis — top 10 best-selling products, revenue by category
-6. Correlation heatmap (Sales, Quantity, Discount, Profit)
-7. Additional insight — profitability by sub-category + discount-vs-profit scatter plot
-8. Written observations after every chart
-9. Conclusion — 3 actionable business recommendations
+## Methodology
+1. **Data cleaning** — dropped rows with missing `CustomerID`, removed cancelled orders (InvoiceNo starting with 'C'), removed negative quantity/price rows (397,884 clean rows, 4,338 unique customers remain)
+2. **RFM feature engineering** — Recency (days since last purchase), Frequency (distinct invoice count), Monetary (total spend) per customer
+3. **Standardisation** — `StandardScaler` applied before clustering, since RFM features are on very different scales
+4. **K-Means + Elbow Method** — tested K=1 to 10, selected **K=4** based on the elbow point
+5. **Cluster visualisation** — scatter plots (log-scaled, due to one extreme outlier cluster) across Recency/Monetary and Frequency/Monetary
+6. **Cluster profiling** — mean RFM values per cluster, customer counts, and per-segment marketing recommendations
 
-## Key Findings
-- Sales are heavily right-skewed; a small number of large orders drive the average up.
-- Q4 is consistently the strongest sales quarter every year — clear seasonality.
-- Discount is negatively correlated with profit; orders discounted above ~30% tend to be unprofitable.
-- **Tables** and **Bookcases** sub-categories are net loss-making despite healthy category-level revenue — this only surfaces at the sub-category level.
+## Key Finding
+Clustering surfaced a **non-obvious insight**: a tiny cluster of just **13 customers** shows extreme frequency (~82 orders) and spend (~£127K average) — these behave like wholesale/B2B accounts, not typical retail shoppers. This required using a log scale on the visualisations, since this cluster would otherwise be invisible against the other ~4,300 customers.
+
+## Cluster Summary
+
+| Cluster | Label | Avg Recency | Avg Frequency | Avg Monetary | Count |
+|---|---|---|---|---|---|
+| 2 | VIP / Wholesale Champions | 7.4 days | 82.5 orders | £127,338 | 13 |
+| 3 | Loyal High-Value Customers | 15.5 days | 22.3 orders | £12,709 | 204 |
+| 0 | Regular / Active Customers | 43.7 days | 3.7 orders | £1,359 | 3,054 |
+| 1 | At-Risk / Lapsed Customers | 248.1 days | 1.6 orders | £481 | 1,067 |
 
 ## How to Run
 ```bash
-pip install pandas matplotlib seaborn jupyter
-jupyter notebook EDA_Retail_Sales.ipynb
+pip install pandas scikit-learn matplotlib seaborn jupyter
+jupyter notebook Customer_Segmentation.ipynb
 ```
 
 ## Note on Data
-`Order Date` / `Ship Date` in the raw CSV use mixed date formats (e.g. `11-08-2016` and `4/15/2017`), so parsing uses `pd.to_datetime(..., format='mixed', dayfirst=True)` rather than a single fixed format.
+Dates are parsed with `pd.to_datetime(..., format='%d-%m-%Y %H:%M')`. Cluster visualizations use a log scale on the Monetary axis due to the extreme outlier cluster (Cluster 2) that would otherwise compress all other clusters into an unreadable clump.
