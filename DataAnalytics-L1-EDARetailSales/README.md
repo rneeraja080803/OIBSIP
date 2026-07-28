@@ -18,7 +18,7 @@ Perform a thorough Exploratory Data Analysis on a retail sales dataset to uncove
 Python, pandas, matplotlib, seaborn, Jupyter Notebook
 
 ## What's Inside
-`EDA_Retail_Sales.ipynb` covers:
+`EDA Retail Sales.ipynb` covers:
 1. Initial inspection (shape, dtypes, nulls, duplicates)
 2. Descriptive statistics (mean, median, mode, std)
 3. Time series analysis — monthly and quarterly sales trends
@@ -38,7 +38,7 @@ Python, pandas, matplotlib, seaborn, Jupyter Notebook
 ## How to Run
 ```bash
 pip install pandas matplotlib seaborn jupyter
-jupyter notebook EDA_Retail_Sales.ipynb
+jupyter notebook EDA Retail Sales.ipynb
 ```
 
 ## Note on Data
