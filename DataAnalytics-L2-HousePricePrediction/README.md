@@ -41,5 +41,5 @@ Python, pandas, scikit-learn (LinearRegression, Ridge), matplotlib, seaborn, Jup
 ## How to Run
 ```bash
 pip install pandas scikit-learn matplotlib seaborn jupyter
-jupyter notebook House_Price_Prediction.ipynb
+jupyter notebook Housing Price Prediction.ipynb
 ```
